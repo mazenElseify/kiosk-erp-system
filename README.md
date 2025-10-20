@@ -12,7 +12,7 @@ The **Kiosk ERP system** is a small ERP system that serves the small street kios
 - **Purchases Management:** Manages and record purchases made with suppliers.
 - **Stock Tracking:** Tracking stock available and the low stock to make purchases for also tracks the damaged products.
 - **Sales Management:** Process sales transactions and generate receipts.
-- **Reporting & Analytics:** Generate reports for sales, inventory and finantial analysis.
+- **Reporting & Analytics:** Generate reports for sales, inventory and finantial analysis.`
 
 
 ## Documentation
