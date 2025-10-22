@@ -2,17 +2,30 @@
   "name": "kiosk-erp-system",
   "version": "1.0.0",
   "description": "The **Kiosk ERP system** is a small ERP system that serves the small street kiosks to manage and track the workflow and records, manage stock level, needed products.",
-  "main": "src/server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "dev:watch": "nodemon --exec ts-node src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mazenElseify/kiosk-erp-system.git"
   },
-  "keywords": ["erp", "kiosk", "management", "system", "nodejs", "express", "mongodb", "mongoose", "sales", "inventory"],
+  "keywords": [
+    "erp",
+    "kiosk",
+    "management",
+    "system",
+    "nodejs",
+    "express",
+    "mongodb",
+    "mongoose",
+    "sales",
+    "inventory"
+  ],
   "author": "Mazen Elseify",
   "license": "ISC",
   "type": "commonjs",
@@ -21,7 +34,8 @@
   },
   "homepage": "https://github.com/mazenElseify/kiosk-erp-system#readme",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
@@ -31,6 +45,15 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/helmet": "^0.0.48",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.9.1",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
