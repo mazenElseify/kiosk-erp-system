@@ -42,3 +42,10 @@ export interface IAuthResponse {
   token?: string;
   user?: IUserResponse;
 }
+export interface IUserForgetPassword {
+  email: string;
+}
+export interface IUserResetPassword {
+  password: string;
+  confirmPassword: string;
+}
