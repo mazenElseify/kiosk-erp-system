@@ -105,15 +105,6 @@ export const login = async (req: Request<{}, IAuthResponse, ILoginRequest>, res:
             return;
         }
 
-        const isPasswordCorrect = await user.comparePassword(password);
-        if (!isPasswordCorrect) {
-            res.status(401).json({
-                success: false,
-                message: 'Invalid Password'
-            });
-            return;
-        }
-
         const token = generateToken((user._id as Types.ObjectId).toString());
 
         res.status(200).json({
@@ -158,14 +149,11 @@ export const forgetPassword = async (req: Request<{}, IAuthResponse, IUserForget
             return;
 
         }
-        if (!user.isActive) {
             // inline
             if (!user.isActive) {
                 res.status(200).json(successResponse);
                 return;
             }
-            return;
-        }
 
         const resetToken = generateResetToken((user._id as Types.ObjectId).toString());
 
@@ -234,3 +222,67 @@ export const verifyResetToken = async ( req: Request<{token : string}, IAuthResp
         }
     }
 };
+export const resetPassword = async (req: Request<{ token: string }, IAuthResponse, IUserResetPassword>, res: Response<IAuthResponse>): Promise<void> => {
+    try {
+        const { token }= req.params;
+        const { password, confirmPassword} = req.body;
+
+        if (!password || !confirmPassword) {
+            res.status(400).json({
+                success: false,
+                message: 'Please provide password and confirm password'
+            });
+            return;
+        }
+        if (password !== confirmPassword) {
+            res.status(400).json({
+                success: false,
+                message: 'Passwords do not match'
+            });
+            return;
+        }
+        if (password.length < 8 ) {
+            res.status(400).json ({
+                success: false,
+                message: 'Password must be at least 8 chaaracters long'
+            });
+            return;
+        }
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SECRET is not defined');
+        }
+
+        const decoded = jwt.verify(token, secret) as { userId: string };
+
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid or exxpired token'
+            });
+            return;
+        }
+
+        user.password = password;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully, You can now login with your new password'
+        });
+    } catch  ( error ) {
+        if (error instanceof jwt.TokenExpiredError) {
+            res.status(400).json({
+                success: false,
+                message: 'Token is not valid anymore'
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'An error occurred'
+            });
+        }
+    }
+
+}
