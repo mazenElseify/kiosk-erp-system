@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/Users';
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt, { SignOptions, TokenExpiredError} from 'jsonwebtoken';
 import { IUserInput, IAuthResponse, ILoginRequest, IUserForgetPassword, IUserResetPassword } from '../types/user.types';
 import { Types } from 'mongoose';
 
@@ -92,7 +92,7 @@ export const login = async (req: Request<{}, IAuthResponse, ILoginRequest>, res:
         if (!user || !(await user.comparePassword(password))) {
             res.status(401).json({
                 success: false,
-                message: 'User not found.'
+                message: 'Invalid credentials.'
             });
             return;
         }
@@ -133,7 +133,7 @@ export const forgetPassword = async (req: Request<{}, IAuthResponse, IUserForget
         // Implementation for forget password functionality goes here
         const { email } = req.body;
         if (!email) {
-            res.status(404).json({
+            res.status(400).json({
                 success: false,
                 message: 'Please enter a valid email'
             });
@@ -162,7 +162,7 @@ export const forgetPassword = async (req: Request<{}, IAuthResponse, IUserForget
         res.status(200).json({
             success: true,
             message: 'Password reset link has been sent to your email',
-            token: resetToken
+            // token: resetToken
         });
     } catch (error) {
         res.status(500).json({
@@ -219,6 +219,7 @@ export const verifyResetToken = async ( req: Request<{token : string}, IAuthResp
                 success: false,
                 message: error instanceof Error ? error.message : 'An error occurred'
             });
+            ;
         }
     }
 };
@@ -244,7 +245,7 @@ export const resetPassword = async (req: Request<{ token: string }, IAuthRespons
         if (password.length < 8 ) {
             res.status(400).json ({
                 success: false,
-                message: 'Password must be at least 8 chaaracters long'
+                message: 'Password must be at least 8 characters long'
             });
             return;
         }
@@ -259,7 +260,7 @@ export const resetPassword = async (req: Request<{ token: string }, IAuthRespons
         if (!user) {
             res.status(400).json({
                 success: false,
-                message: 'Invalid or exxpired token'
+                message: 'Invalid or expired token'
             });
             return;
         }
@@ -277,6 +278,7 @@ export const resetPassword = async (req: Request<{ token: string }, IAuthRespons
                 success: false,
                 message: 'Token is not valid anymore'
             });
+            return;
         } else {
             res.status(500).json({
                 success: false,

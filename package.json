@@ -8,8 +8,13 @@
     "start": "node dist/server.js",
     "dev": "ts-node -r tsconfig-paths/register src/server.ts",
     "watch": "tsc -w",
+    "postbuild": "npm prune --production",
     "dev:watch": "nodemon --exec ts-node src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "repository": {
     "type": "git",
